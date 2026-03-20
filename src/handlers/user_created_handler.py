@@ -29,10 +29,18 @@ class UserCreatedHandler(EventHandler):
         name = event_data.get('name')
         email = event_data.get('email')
         datetime = event_data.get('datetime')
+        user_type_id = event_data.get('user_type_id', 1)
+
+        templates = {
+            1: "welcome_client_template.html",
+            2: "welcome_employee_template.html",
+            3: "welcome_manager_template.html",
+        }
+        template_file = templates.get(user_type_id, "welcome_client_template.html")
 
         current_file = Path(__file__)
-        project_root = current_file.parent.parent   
-        with open(project_root / "templates" / "welcome_client_template.html", 'r') as file:
+        project_root = current_file.parent.parent
+        with open(project_root / "templates" / template_file, 'r') as file:
             html_content = file.read()
             html_content = html_content.replace("{{user_id}}", str(user_id))
             html_content = html_content.replace("{{name}}", name)
